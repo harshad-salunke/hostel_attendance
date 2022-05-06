@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Hostel_Application</string>
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="forward"><![CDATA[->]]></string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array id="harshad" name="clgname">
+        <item>KJCOEMR</item>
+        <item>IIT</item>
+        <item>TAE</item>
+    </string-array>
+
+    <string-array id="harshad" name="floorno">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+    </string-array>
+
+    <string-array id="harshad" name="gender">
+        <item>Meal</item>
+        <item>Femeal</item>
+    </string-array>
+
+</resources>
