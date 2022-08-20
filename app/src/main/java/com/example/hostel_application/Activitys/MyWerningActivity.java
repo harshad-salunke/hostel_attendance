@@ -18,7 +18,7 @@ public class MyWerningActivity extends AppCompatActivity {
         setContentView(R.layout.activity_mywerning);
         ImageView img=findViewById(R.id.warning_png);
         Glide.with(this).load(R.drawable.giphy).into(img);
-        findViewById(R.id.warning_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.block_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivityForResult(new Intent(android.provider.Settings.ACTION_DATE_SETTINGS), 0);

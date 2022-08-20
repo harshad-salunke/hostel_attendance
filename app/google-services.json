@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:474717893065:android:f58813524c203687eab818",
+        "mobilesdk_app_id": "1:474717893065:android:4cad679be6bca3f7eab818",
         "android_client_info": {
-          "package_name": "com.example.hostel"
+          "package_name": "com.example.admin_application"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "474717893065-16gumjsf9ob6gfsghoaopogi6m5aa5df.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.admin_application",
+            "certificate_hash": "c854ac0cf8271a0013a3b1a114c684bd78f1b094"
+          }
+        },
         {
           "client_id": "474717893065-r10pb7lvl2k2hcdb007uvr903ftd4nar.apps.googleusercontent.com",
           "client_type": 3
@@ -44,11 +52,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "474717893065-av9bfctvf2692o4lr64lucu5r5m3antk.apps.googleusercontent.com",
+          "client_id": "474717893065-rv0o7v55sovhlrb53o9akkr6n5e5vbi8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.hostel_application",
-            "certificate_hash": "bb1ef7bbbd8eaff61ffcf663530d264aa0bc1ad9"
+            "certificate_hash": "c854ac0cf8271a0013a3b1a114c684bd78f1b094"
           }
         },
         {

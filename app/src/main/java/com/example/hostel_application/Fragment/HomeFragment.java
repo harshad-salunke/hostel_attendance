@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -37,13 +38,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.example.hostel_application.Activitys.BlockActivity;
 import com.example.hostel_application.Activitys.MyWerningActivity;
 import com.example.hostel_application.CalendarAdapter;
+import com.example.hostel_application.Login.Login_info;
 import com.example.hostel_application.R;
+import com.example.hostel_application.models.Attendance_data;
 import com.example.hostel_application.models.Student;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -67,7 +74,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -90,36 +104,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     Geocoder geocoder;
 
     ArrayList<Integer> daysInMonth;
-    ArrayList<Integer> present;
+    ArrayList<Integer> present,permission_present;
+    ArrayList<Attendance_data> Main_attendance_data;
     Button preMonth, nextMOnt;
     private GoogleMap mMap;
     View Mapview;
     FusedLocationProviderClient fusedLocationProviderClient;
     LocationRequest locationRequest;
-    int ACCESSS_LOCATION_REQUEST_CODE = 1000;
+
     TextView longitude;
     TextView latitude;
-    CardView map_btn_card,card_map;
+    CardView map_btn_card, card_map;
     Button cancle_map;
-    boolean location_first=true;
+    boolean location_first = true;
     TextView location_remider_text;
-    int u=0;
-    Circle circle=null;
+    int u = 0;
+    Circle circle = null;
     TextView inside_outside_maptxt;
 
-    Dialog netConectivityDialog=null;
+    Dialog netConectivityDialog = null;
     Button make_attendance_btn;
     SharedPreferences sharedPreferences;
-    String Present_date="";
-    TextView attendance_day_month,attendance_persentage;
-    boolean isInsideZone=false;
+    String Present_date = "";
+    TextView attendance_day_month, attendance_persentage;
+    boolean isInsideZone = false;
     AlertDialog.Builder location_alert;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     Student student;
     ScrollView scrollView;
     ShimmerFrameLayout shimmerFrameLayout;
-    TextView student_name,student_room,student_today_date;
+    TextView student_name, student_room, student_today_date;
+    ImageView profile_image;
+
+    LinearLayout progress_layout,location_layout;
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -127,25 +145,41 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         sharedPreferences = androidx.preference.PreferenceManager.getDefaultSharedPreferences(getActivity());
-        firebaseAuth=FirebaseAuth.getInstance();
-        firebaseUser=firebaseAuth.getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Students");
-        student_name=view.findViewById(R.id.student_name);
-        student_room=view.findViewById(R.id.student_room);
-        student_today_date=view.findViewById(R.id.today_date);
-        scrollView=view.findViewById(R.id.scroll_View);
-        shimmerFrameLayout=view.findViewById(R.id.shimmerlayout);
+        student_name = view.findViewById(R.id.student_name);
+        student_room = view.findViewById(R.id.student_room);
+        student_today_date = view.findViewById(R.id.today_date);
+        scrollView = view.findViewById(R.id.scroll_View);
+        shimmerFrameLayout = view.findViewById(R.id.shimmerlayout);
         shimmerFrameLayout.startShimmer();
+
+        profile_image=view.findViewById(R.id.profile_image);
+
         databaseReference.child("All_student").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                 student=snapshot.getValue(Student.class);
-                 String date=getCurrentDate()+" "+getCurrentMonth();
-                 student_name.setText(student.getName());
-                 student_room.setText(student.getRoom_No());
-                 student_today_date.setText(date);
-                 scrollView.setVisibility(View.VISIBLE);
+                student = snapshot.getValue(Student.class);
+                if (student.isBlocked()) {
+                    Intent intent = new Intent(getActivity(), BlockActivity.class);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
+                String date = getCurrentDate() + " " + getCurrentMonth();
+                student_name.setText(student.getName());
+                student_room.setText(student.getRoom_No());
+                student_today_date.setText(date);
+                if(student.getGender().equals("Male")){
+
+                    profile_image.setImageResource(R.drawable.college_boy);
+                }else {
+                    profile_image.setImageResource(R.drawable.college_girl);
+                }
+
+
+                scrollView.setVisibility(View.VISIBLE);
                 shimmerFrameLayout.stopShimmer();
                 shimmerFrameLayout.setVisibility(View.GONE);
 
@@ -157,47 +191,49 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         InitAllViews(view);
-        if(!isGPSLocationON()){
+        if (!isGPSLocationON()) {
             showGpsAlertBox();
         }
 
         make_attendance_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!CheckInternetConnectiity()){
+                if (!CheckInternetConnectiity()) {
                     ShowNetWorkDilogBox();
                     return;
                 }
-                boolean check_autodate=true;
+                boolean check_autodate = true;
                 try {
-                   check_autodate= check_autoDateTimeOnOf();
+                    check_autodate = check_autoDateTimeOnOf();
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
-                if(!check_autodate){
-                    Intent intent=new Intent(getContext(), MyWerningActivity.class);
+                if (!check_autodate) {
+                    Intent intent = new Intent(getContext(), MyWerningActivity.class);
                     getContext().startActivity(intent);
                     return;
                 }
-                if(!isGPSLocationON()){
+                if (!isGPSLocationON()) {
                     showGpsAlertBox();
                     return;
                 }
-                if(!isInsideZone){
+                if (!isInsideZone) {
                     Toast.makeText(getContext(), "!! You are OutSide of Zone ", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
 
-            String uid=firebaseUser.getUid();
-                String year_str=getCurrentYear();
-                String month_str=getCurrentMonth();
-                int cu_date=getCurrentDate();
-                databaseReference.child("attendance").child(uid).child(year_str).child(month_str).push().setValue(cu_date).addOnSuccessListener(new OnSuccessListener<Void>() {
+                String uid = firebaseUser.getUid();
+                String year_str = getCurrentYear().trim();
+                String month_str = getCurrentMonth().trim();
+                int cu_date = getCurrentDate();
+                String currentTime=getCurenntTime();
+                String msg_id=databaseReference.push().getKey();
+                Attendance_data attendance_data=new Attendance_data(cu_date,"yes",currentTime,msg_id);
+                databaseReference.child("attendance").child(uid).child(year_str).child(month_str).child(msg_id).setValue(attendance_data).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-
-                        String str=getCurrentDate()+getCurrentMonth()+getCurrentYear();
+                        String str = getCurrentDate() + getCurrentMonth() + getCurrentYear();
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("date", str);
                         myEdit.commit();
@@ -211,27 +247,27 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 //                        making attendance button invisible
 
                         make_attendance_btn.setText("Present");
-                        make_attendance_btn.setBackgroundColor(Color.GREEN);
+                        make_attendance_btn.setBackgroundColor(getResources().getColor(R.color.green));
                         make_attendance_btn.setTextColor(Color.BLACK);
                         make_attendance_btn.setClickable(false);
-                        databaseReference.child("dailyattendance").child(student.getUid()).setValue(student);
+                        databaseReference.child("dailyattendance").child(year_str).child(month_str).child(cu_date + "").child(student.getUid()).setValue(student.getUid());
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), ""+e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
 
-//                for auto date selected date
-//                setFirebaseDatabase(year,month,getSelectedDate(selectedDate));
             }
 
         });
+
         make_attendance_btn.setBackgroundColor(Color.rgb(33, 150, 243));
-        if(isAlreadyPresent()){
+
+        if (isAlreadyPresent()) {
             make_attendance_btn.setText("Present");
-            make_attendance_btn.setBackgroundColor(Color.GREEN);
+            make_attendance_btn.setBackgroundColor(getResources().getColor(R.color.green));
             make_attendance_btn.setClickable(false);
 
         }
@@ -259,27 +295,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     }
 
                     public void onFinish() {
-                                        card_map.setVisibility(View.GONE);
+                        card_map.setVisibility(View.GONE);
 
                     }
 
                 }.start();
             }
         });
+
         preMonth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 previousMonthAction(view);
             }
         });
+
         nextMOnt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 nextMonthAction(view);
             }
         });
+
         getFirebaseData(year, month);
         return view;
+    }
+
+    private String getCurenntTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy hh.mm aa");
+        String formattedDate = dateFormat.format(new Date()).toString();
+        return  formattedDate;
     }
 
     private void showGpsAlertBox() {
@@ -298,14 +343,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void InitAllViews(View view) {
-
-        map_btn_card=view.findViewById(R.id.map_cardView);
-        cancle_map=view.findViewById(R.id.cancel_map);
-        card_map=view.findViewById(R.id.Map_view);
-        attendance_day_month=view.findViewById(R.id.attendance_in_month);
-        attendance_persentage=view.findViewById(R.id.attendance_persentage);
-        longitude=view.findViewById(R.id.longitude);
-        latitude=view.findViewById(R.id.latitude);
+        progress_layout=view.findViewById(R.id.progress_layout);
+        location_layout=view.findViewById(R.id.location_layout);
+        map_btn_card = view.findViewById(R.id.map_cardView);
+        cancle_map = view.findViewById(R.id.cancel_map);
+        card_map = view.findViewById(R.id.Map_view);
+        attendance_day_month = view.findViewById(R.id.attendance_in_month);
+        attendance_persentage = view.findViewById(R.id.attendance_persentage);
+        longitude = view.findViewById(R.id.longitude);
+        latitude = view.findViewById(R.id.latitude);
         ShowNetWorkDilogBox();
         MapInitialization();
 
@@ -316,45 +362,41 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         setMonthView();
         preMonth = view.findViewById(R.id.previousMonth);
         nextMOnt = view.findViewById(R.id.nextMonth);
-        location_remider_text=view.findViewById(R.id.Location_reminder);
-        inside_outside_maptxt=view.findViewById(R.id.m_inside_out_text);
-        make_attendance_btn=view.findViewById(R.id.make_attendance);
+        location_remider_text = view.findViewById(R.id.Location_reminder);
+        inside_outside_maptxt = view.findViewById(R.id.m_inside_out_text);
+        make_attendance_btn = view.findViewById(R.id.make_attendance);
         location_alert = new AlertDialog.Builder(getContext());
 
     }
 
     private boolean isGPSLocationON() {
-        LocationManager manager = (LocationManager)getActivity(). getSystemService(Context.LOCATION_SERVICE );
+        LocationManager manager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         boolean statusOfGPS = manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        return  statusOfGPS;
+        return statusOfGPS;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private boolean isAlreadyPresent() {
-        Present_date=sharedPreferences.getString("date","");
-        String str=getCurrentDate()+getCurrentMonth()+getCurrentYear();
-        if(Present_date.equals(str)){
-            Toast.makeText(getContext(), "equals", Toast.LENGTH_SHORT).show();
-            return  true;
+        Present_date = sharedPreferences.getString("date", "");
+        String str = getCurrentDate() + getCurrentMonth() + getCurrentYear();
+        if (Present_date.equals(str)) {
+            return true;
         }
-       return  false;
+        return false;
 
     }
 
 
     private boolean check_autoDateTimeOnOf() throws Settings.SettingNotFoundException {
-        if(Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.AUTO_TIME) == 1)
-        {
+        if (Settings.Global.getInt(getActivity().getContentResolver(), Settings.Global.AUTO_TIME) == 1) {
             return true;
-        }
-        else
-        {
-            return  false;
+        } else {
+            return false;
             // Disabed
         }
     }
 
-    private int getCurrentDate()  {
+    private int getCurrentDate() {
         Date c = Calendar.getInstance().getTime();
 
         return (int) c.getDate();
@@ -362,13 +404,14 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private String getCurrentYear() {
-        LocalDate localDate=LocalDate.now();
+        LocalDate localDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
         return localDate.format(formatter);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private  String getCurrentMonth(){
-        LocalDate localDate=LocalDate.now();
+    private String getCurrentMonth() {
+        LocalDate localDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         return localDate.format(formatter);
     }
@@ -393,30 +436,36 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-
-
     public void getFirebaseData(String year, String month) {
-        String uid=firebaseUser.getUid();
+        String uid = firebaseUser.getUid();
         databaseReference.child("attendance").child(uid).child(year).child(month).addValueEventListener(new ValueEventListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (present.size() > 0) {
-                    present.clear();
+                if (Main_attendance_data.size() > 0) {
+                    Main_attendance_data.clear();
                 }
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    int p = dataSnapshot.getValue(Integer.class);
-                    if(!present.contains(p)){
-                        present.add(p);
+                    Attendance_data attendance_data = dataSnapshot.getValue(Attendance_data.class);
+                    Main_attendance_data.add(attendance_data);
+                    int p=attendance_data.getPresent();
+                    if(attendance_data.getDescription().equals("yes")){
+                        if (!present.contains(p)) {
+                            present.add(p);
+                        }
+                    }else{
+                        permission_present.add(p);
                     }
 
+
                 }
-                Log.d("harshadsalunke",present.toString());
-                int days_presnt=present.size();
-                int day_in_month=getDayIinMonth(selectedDate);
-                String days=days_presnt+" / "+day_in_month+" Days";
-               Float persentage= getPersentageOfPresenty(days_presnt,day_in_month);
+                Log.d("harshadsalunke", present.toString());
+                int days_presnt = present.size();
+                int day_in_month = getDayIinMonth(selectedDate);
+                String days = days_presnt + " / " + day_in_month + " Days";
+                Float persentage = getPersentageOfPresenty(days_presnt, day_in_month);
                 attendance_day_month.setText(days);
-                attendance_persentage.setText(persentage+" %");
+                attendance_persentage.setText(persentage + " %");
                 calendarAdapter.notifyDataSetChanged();
             }
 
@@ -435,7 +484,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         score = days_presnt;
 
         percentage = (score * 100 / total);
-        return  percentage;
+        return percentage;
     }
 
 
@@ -445,23 +494,29 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         monthYearText = view.findViewById(R.id.monthYearTV);
     }
 
+
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void setMonthView() {
         monthYearText.setText(monthYearFromDate(selectedDate));
         daysInMonth = daysInMonthArray(selectedDate);
         present = new ArrayList<>();
-        calendarAdapter = new CalendarAdapter(daysInMonth, getContext(), present);
+        Main_attendance_data=new ArrayList<>();
+        permission_present=new ArrayList<>();
+        calendarAdapter = new CalendarAdapter(daysInMonth, getContext(), present,Main_attendance_data,permission_present);
+        calendarAdapter.setHasStableIds(true);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
     }
-@RequiresApi(api = Build.VERSION_CODES.O)
-private  int getDayIinMonth(LocalDate date){
-    YearMonth yearMonth = YearMonth.from(date);
 
-    int daysInMonth = yearMonth.lengthOfMonth();
-    return  daysInMonth;
-}
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private int getDayIinMonth(LocalDate date) {
+        YearMonth yearMonth = YearMonth.from(date);
+
+        int daysInMonth = yearMonth.lengthOfMonth();
+        return daysInMonth;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
 
@@ -489,15 +544,17 @@ private  int getDayIinMonth(LocalDate date){
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         return date.format(formatter);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private Integer getSelectedDate(LocalDate date){
+    private Integer getSelectedDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd");
-        String selected=date.format(formatter);
-        if(selected.startsWith("0")){
-            selected=selected.replace("0","");
+        String selected = date.format(formatter);
+        if (selected.startsWith("0")) {
+            selected = selected.replace("0", "");
         }
         return Integer.parseInt(selected);
     }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     private String getYear(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy");
@@ -523,17 +580,17 @@ private  int getDayIinMonth(LocalDate date){
         setMonthView();
     }
 
-    public void ShowNetWorkDilogBox(){
-        if(netConectivityDialog==null){
-            netConectivityDialog=new Dialog(getContext());
+    public void ShowNetWorkDilogBox() {
+        if (netConectivityDialog == null) {
+            netConectivityDialog = new Dialog(getContext());
             netConectivityDialog.setContentView(R.layout.internet_alert_dailog);
             netConectivityDialog.setCanceledOnTouchOutside(false);
             netConectivityDialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
                     WindowManager.LayoutParams.WRAP_CONTENT);
 
             netConectivityDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//            netConectivityDialog.getWindow().getAttributes().windowAnimations= android.R.style.Animation_Dialog;
-            Button tryAgain_btn=netConectivityDialog.findViewById(R.id.warning_btn);
+            netConectivityDialog.getWindow().getAttributes().windowAnimations= android.R.style.Animation_Dialog;
+            Button tryAgain_btn = netConectivityDialog.findViewById(R.id.block_ok);
             tryAgain_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -541,46 +598,43 @@ private  int getDayIinMonth(LocalDate date){
                 }
             });
         }
-        if(!CheckInternetConnectiity()){
+        if (!CheckInternetConnectiity()) {
             netConectivityDialog.show();
-        }
-        else{
+        } else {
             netConectivityDialog.dismiss();
         }
 
     }
-    public Boolean CheckInternetConnectiity(){
-        Context context=getContext();
-        if(context!=null){
-            ConnectivityManager  connectivityManager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo  networkInfo=connectivityManager.getActiveNetworkInfo();
+
+    public Boolean CheckInternetConnectiity() {
+        Context context = getContext();
+        if (context != null) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             boolean isConnected = networkInfo != null &&
                     networkInfo.isConnectedOrConnecting();
-            return  isConnected;
+            return isConnected;
         }
-       return  false;
+        return false;
 
     }
+
     @Override
     public void onStart() {
-        boolean check_autodate=true;
+        boolean check_autodate = true;
         try {
-            check_autodate= check_autoDateTimeOnOf();
+            check_autodate = check_autoDateTimeOnOf();
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
-        if(!check_autodate){
-            Intent intent=new Intent(getContext(), MyWerningActivity.class);
+        if (!check_autodate) {
+            Intent intent = new Intent(getContext(), MyWerningActivity.class);
             getContext().startActivity(intent);
             getActivity().finish();
             return;
         }
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            startedLocationUpdate();
-        } else {
-            requestPermissions( new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, ACCESSS_LOCATION_REQUEST_CODE);
-        }
+
         super.onStart();
     }
 
@@ -592,18 +646,61 @@ private  int getDayIinMonth(LocalDate date){
                 .center(new LatLng(18.4228781, 73.9040033))
                 .radius(1000)
                 .strokeColor(Color.RED));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(18.4228781,73.9040033),14));
-        mMap.setMyLocationEnabled(true);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(18.4228781, 73.9040033), 14));
+        getLocationPermission();
 
-        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
 
     }
+
+    private void getLocationPermission() {
+        Dexter.withContext(getContext())
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(new PermissionListener() {
+                    @Override
+                    public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
+                        mMap.setMyLocationEnabled(true);
+
+                        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
+                    }
+
+                    @Override
+                    public void onPermissionDenied(PermissionDeniedResponse permissionDeniedResponse) {
+                        if (permissionDeniedResponse.isPermanentlyDenied()) {
+                            AlertDialog.Builder alert_builder = new AlertDialog.Builder(getContext());
+                            alert_builder.setTitle("Permission Denied")
+                                    .setMessage("Permission is permanently denied. To use This app you need go to setting to allow the permission.")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Intent intent = new Intent();
+                                            intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                            intent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+                                            startActivity(intent);
+                                        }
+                                    }).show();
+
+                        } else {
+                            AlertDialog.Builder alert_builder = new AlertDialog.Builder(getContext());
+                            alert_builder.setTitle("Permission Required !")
+                                    .setMessage("Please to Allow a permission to use this app. It is Required !!!")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            getLocationPermission();
+                                        }
+                                    }).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permissionRequest, PermissionToken permissionToken) {
+                        permissionToken.continuePermissionRequest();
+                    }
+                }).check();
+    }
+
+
+
 
     LocationCallback locationCallback = new LocationCallback() {
         @Override
@@ -613,7 +710,8 @@ private  int getDayIinMonth(LocalDate date){
             Location location = locationResult.getLastLocation();
             longitude.setText(""+location.getLatitude());
             latitude.setText(""+location.getLongitude());
-
+            progress_layout.setVisibility(View.GONE);
+            location_layout.setVisibility(View.VISIBLE);
             if (location_first){
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),location.getLongitude()),17));
                 location_first=false;

@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.hostel_application.MainActivity;
 import com.example.hostel_application.R;
@@ -52,9 +53,19 @@ public class LoginActivity extends AppCompatActivity {
     boolean enter_otp=false;
     TextView mobile_text;
     Student student;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        try {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        catch (Exception e){
+
+        }
+        sharedPreferences=getSharedPreferences("user_info",MODE_PRIVATE);
+        editor=sharedPreferences.edit();
 
         Intent intent=getIntent();
         String json_obj=intent.getStringExtra("myJson");
@@ -167,11 +178,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void SaveDataInDB(Student s) {
-
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
         String user=firebaseAuth.getCurrentUser().getUid();
         s.setUid(user);
-            databaseReference.child(user).setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
+        Gson gson=new Gson();
+        editor.putString("user",gson.toJson(s));
+        editor.commit();
+        databaseReference.child(user).setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     Intent intent=new Intent(LoginActivity.this, MainActivity.class);

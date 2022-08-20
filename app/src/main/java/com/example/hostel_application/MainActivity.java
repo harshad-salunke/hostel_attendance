@@ -1,30 +1,60 @@
 package com.example.hostel_application;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.example.hostel_application.Activitys.AcountDeleteActivity;
+import com.example.hostel_application.Activitys.DeletedActivity;
+import com.example.hostel_application.Fragment.AnnouncementFragment;
+import com.example.hostel_application.Fragment.EntryOutFragment;
 import com.example.hostel_application.Fragment.HomeFragment;
-import com.example.hostel_application.Fragment.NotificationFragment;
-import com.example.hostel_application.Fragment.SettingFragment;
-
-import java.util.Set;
+import com.example.hostel_application.Fragment.ProfileFragment;
+import com.example.hostel_application.Notification.FcmNotificationsSender;
+import com.example.hostel_application.models.DeleteAcount;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
     MeowBottomNavigation bottomNavigation;
     Fragment fragment=null;
     int fragmentId=0;
+    SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        try {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        catch (Exception e){
+
+        }
+
+        sharedPreferences=getSharedPreferences("delete",MODE_PRIVATE);
+        checkDeletedOrNot();
+
+        FirebaseMessaging.getInstance().subscribeToTopic("notification").addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+            }
+        });
+
+
+
         bottomNavigation=findViewById(R.id.meowBottomNavigation);
         bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.notifications_ic));
         bottomNavigation.add(new MeowBottomNavigation.Model(2,R.drawable.home_ic));
-        bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.settings_ic));
+        bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.ic_baseline_send_24));
+        bottomNavigation.add(new MeowBottomNavigation.Model(4,R.drawable.ic_baseline_account_circle_24));
+
         bottomNavigation.setOnShowListener(new MeowBottomNavigation.ShowListener() {
             @Override
             public void onShowItem(MeowBottomNavigation.Model item) {
@@ -33,11 +63,15 @@ public class MainActivity extends AppCompatActivity {
                         fragment=new HomeFragment();
                         break;
                     case 1:
-                        fragment=new NotificationFragment();
+                        fragment=new AnnouncementFragment();
                         break;
                     case 3:
-                        fragment=new SettingFragment();
+                        fragment=new EntryOutFragment();
                         break;
+                    case 4:
+                        fragment=new ProfileFragment();
+                        break;
+
                 }
                 loadFragment(fragment,item.getId());
             }
@@ -57,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void loadFragment(Fragment newfragment,int id) {
         if (fragmentId==0 || fragmentId!=id) {
             fragmentId=id;
@@ -66,4 +101,14 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-    }}
+    }
+
+    private void checkDeletedOrNot() {
+        String delete=sharedPreferences.getString("delete","no");
+        if(delete.equals("yes")){
+            Intent intent=new Intent(MainActivity.this, DeletedActivity.class);
+            startActivity(intent);
+            finishAffinity();
+        }
+    }
+}

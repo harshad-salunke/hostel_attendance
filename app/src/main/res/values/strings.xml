@@ -1,17 +1,18 @@
 <resources>
-    <string name="app_name">Hostel_Application</string>
+    <string name="app_name">KJEI Student</string>
     <string name="back"><![CDATA[<-]]></string>
     <string name="forward"><![CDATA[->]]></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string-array id="harshad" name="clgname">
+<style name="delete">Account Deletion</style>
+    <string-array name="clgname" id="harshad">
         <item>KJCOEMR</item>
         <item>IIT</item>
         <item>TAE</item>
+        <item>TCOP</item>
     </string-array>
 
-    <string-array id="harshad" name="floorno">
+    <string-array name="floorno" id="harshad">
         <item>0</item>
         <item>1</item>
         <item>2</item>
@@ -21,9 +22,41 @@
         <item>6</item>
     </string-array>
 
-    <string-array id="harshad" name="gender">
-        <item>Meal</item>
-        <item>Femeal</item>
+    <string-array name="gender" id="harshad">
+        <item>Male</item>
+        <item>Female</item>
     </string-array>
+
+    <string-array name="clg_year" id="harshad">
+
+        <!--        <item> 1st Year</item>-->
+        <!--        <item>2nd Year</item>-->
+        <!--        <item>3rd Year</item>-->
+        <!--        <item>4th Year</item>-->
+
+        <item>FE</item>
+        <item>SE</item>
+        <item>TE</item>
+        <item>BE</item>
+    </string-array>
+
+    <string-array name="clg_blanch" id="harshad">
+
+        <item>Computer</item>
+        <item>IT</item>
+        <item>Mechanical</item>
+        <item>Civil</item>
+        <item>ENTC</item>
+    </string-array>
+
+    <string name="title_activity_blocked">BlockedActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 </resources>

@@ -39,7 +39,7 @@
                 android:layout_marginTop="16dp">
 
                 <View
-                    android:id="@+id/textView6"
+                    android:id="@+id/bottom_description"
                     android:layout_width="0dp"
                     android:layout_height="15dp"
                     android:layout_marginStart="15dp"
@@ -63,8 +63,8 @@
                     android:text="Room No"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/textView6"
-                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                    app:layout_constraintStart_toStartOf="@+id/bottom_description"
+                    app:layout_constraintTop_toBottomOf="@+id/bottom_description" />
 
                 <View
                     android:id="@+id/textView8"
