@@ -19,11 +19,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hostel_Application">
         <activity
+            android:name=".Activitys.ContactHomeActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activitys.PrivacyPolicyActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".Activitys.ComplaintActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".Activitys.EntryOutResponseActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activitys.EntryOutFormActivity"
-            android:exported="true"></activity>
+            android:exported="true"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".Activitys.RestoreActivity"
             android:exported="false"
@@ -67,7 +81,11 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
 
-        <activity android:name=".Login.LoginActivity" />
+        <activity android:name=".Login.LoginActivity"
+            android:exported="false"
+            android:screenOrientation="portrait">
+
+        </activity>
         <activity
             android:name=".Login.Login_info"
             android:exported="true"

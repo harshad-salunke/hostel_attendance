@@ -4,7 +4,9 @@
     <string name="forward"><![CDATA[->]]></string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-<style name="delete">Account Deletion</style>
+
+    <style name="delete">Account Deletion</style>
+
     <string-array name="clgname" id="harshad">
         <item>KJCOEMR</item>
         <item>IIT</item>

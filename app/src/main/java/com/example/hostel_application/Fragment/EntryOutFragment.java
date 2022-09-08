@@ -16,7 +16,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.hostel_application.Activitys.EntryOutFormActivity;
 import com.example.hostel_application.Adapters.EntryOutAdapter;
 import com.example.hostel_application.Adapters.NoticeAdapter;
@@ -45,7 +49,8 @@ DatabaseReference databaseReference;
     ArrayList<EntryOutModel> arrayList;
     ShimmerFrameLayout shimmerFrameLayout;
     Student student;
-
+ImageView my_logo;
+LinearLayout empty_form;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +86,12 @@ DatabaseReference databaseReference;
                 entryOutAdapter.notifyDataSetChanged();
                 shimmerFrameLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                if (arrayList.size()==0){
+                    empty_form.setVisibility(View.VISIBLE);
+                }else {
+                    empty_form.setVisibility(View.GONE);
+
+                }
             }
 
             @Override
@@ -107,6 +118,10 @@ DatabaseReference databaseReference;
         arrayList=new ArrayList<>();
         entryOutAdapter=new EntryOutAdapter(getContext(),arrayList);
         recyclerView.setAdapter(entryOutAdapter);
+        my_logo=view.findViewById(R.id.my_logo2);
+        empty_form=view.findViewById(R.id.empty_notice);
+
+        Glide.with(this).load(R.drawable.my_logo).into(my_logo);
     }
 
 }

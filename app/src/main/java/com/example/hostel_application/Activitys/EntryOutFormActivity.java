@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.hostel_application.Notification.FcmNotificationsSender;
 import com.example.hostel_application.R;
 import com.example.hostel_application.models.EntryOutModel;
 import com.example.hostel_application.models.Student;
@@ -41,7 +42,6 @@ public class EntryOutFormActivity extends AppCompatActivity {
     SharedPreferences.Editor editor;
     Student student;
     TextInputLayout to_layout,from_layout,reason_layout;
-    String User_msg_token;
     int val_from_date,val_from_month,val_to_date,val_to_month;
 FirebaseDatabase firebaseDatabase;
 DatabaseReference databaseReference;
@@ -58,14 +58,10 @@ DatabaseReference databaseReference;
         editor=sharedPreferences.edit();
 
         String student_info_str=sharedPreferences.getString("user","");
-        User_msg_token=sharedPreferences.getString("msg_token","");
 
-        if(User_msg_token.equals("")){
-            getDiviceToken();
-        }else{
-            Toast.makeText(this, "already present", Toast.LENGTH_SHORT).show();
-        }
+
         student=gson.fromJson(student_info_str,Student.class);
+
 
         initView();
 
@@ -153,13 +149,9 @@ DatabaseReference databaseReference;
                 int current_date=cal.get(Calendar.DATE);
                 int current_month=cal.get(Calendar.MONTH);
 
-                if(User_msg_token.equals("")){
-                    Toast.makeText(EntryOutFormActivity.this, "please Wait", Toast.LENGTH_SHORT).show();
-                    getDiviceToken();
-                    return;
-                }
-                String to_date_str=to_date.getText().toString();
-                String from_date_str=from_date.getText().toString();
+
+                String to_date_str=to_date.getText().toString().trim();
+                String from_date_str=from_date.getText().toString().trim();
                 String reason_str=entryout_reson.getText().toString();
                 Log.d("harshad",current_date+"c date");
                 Log.d("harshad",current_month+"c date");
@@ -167,6 +159,7 @@ DatabaseReference databaseReference;
                 Log.d("harshad",val_from_month+"from month");
                 Log.d("harshad",val_to_date+" to  date");
                 Log.d("harshad",val_to_month+" to month");
+                Log.d("harshad","val from="+val_from_date +" "+val_from_month+" "+" val to"+val_to_date +" "+val_to_month);
                 if (to_date_str.equals("") || to_date_str==null){
                     to_layout.setError("Date Required...");
                     return;
@@ -177,19 +170,17 @@ DatabaseReference databaseReference;
                     return;
                 }
 
-                if (val_from_date<current_date || val_from_month<current_month){
+                if (val_from_date<current_date && val_from_month<=current_month){
                     from_layout.setError("Please Selecte Valid Date");
                     to_layout.setError("Please Selecte Valid Date");
                     return;
                 }
-
-                if(val_from_month>val_to_month){
+                else if(val_from_month>val_to_month){
                     from_layout.setError("Please Selecte Valid Date");
                     to_layout.setError("Please Selecte Valid Date");
-
                     return;
                 }
-                if(val_from_date>val_to_date && val_from_month==val_to_month){
+                else   if(val_from_date>val_to_date && val_from_month==val_to_month){
                     from_layout.setError("Please Selecte Valid Date");
                     to_layout.setError("Please Selecte Valid Date");
 
@@ -200,7 +191,7 @@ DatabaseReference databaseReference;
                     to_layout.setError("Please Selecte Valid Date");
 
                     return;}
-                EntryOutModel entryOutModel=new EntryOutModel("",student.getName(),student.getUid(),User_msg_token,"p",to_date_str,from_date_str,reason_str,"");
+                EntryOutModel entryOutModel=new EntryOutModel("",student.getName(),student.getUid(),student.getMsg_token(),"p",to_date_str,from_date_str,reason_str,"");
 
             setDataTofirebase(entryOutModel);
             }
@@ -214,6 +205,8 @@ DatabaseReference databaseReference;
         databaseReference.child("entryout").child(key).setValue(entryOutModel).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
+                FcmNotificationsSender notificationsSender=new FcmNotificationsSender("/topics/admin","Entry Out Request",entryOutModel.getName(),getApplicationContext(),EntryOutFormActivity.this);
+                notificationsSender.SendNotifications();
                 Toast.makeText(EntryOutFormActivity.this, "Succesfully Sended", Toast.LENGTH_SHORT).show();
                 dialog.cancel();
                 finish();
@@ -228,32 +221,6 @@ DatabaseReference databaseReference;
 
     }
 
-    private void getDiviceToken() {
-        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
-            @Override
-            public void onSuccess(String s) {
-                FirebaseMessaging.getInstance().getToken()
-                        .addOnCompleteListener(new OnCompleteListener<String>() {
-                            @Override
-                            public void onComplete(@NonNull Task<String> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w("harshad", "Fetching FCM registration token failed", task.getException());
-                                    return;
-                                }
-
-                                // Get new FCM registration token
-                                User_msg_token = task.getResult();
-                                editor.putString("msg_token",User_msg_token);
-                                editor.commit();
-                                Log.d("harshad", "Fetching FCM registration token done "+User_msg_token);
-
-                                // Log and toast
-                            }
-                        });
-            }
-        });
-
-    }
 
     private void initView() {
         send_btn=findViewById(R.id.entryout_send);

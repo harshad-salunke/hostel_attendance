@@ -16,46 +16,67 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:layout_height="match_parent"
+            android:gravity="center|center_horizontal"
             android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/imageView3"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                app:srcCompat="@drawable/blocked_png" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="monospace"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:text="Sorry Blocked By Admin"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:fontFamily="serif"
-                android:text="You Are block by Admin please contact to user Admin"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/white" />
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    app:srcCompat="@drawable/blocked_png" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/aclonica"
+                    android:gravity="center"
+                    android:text="Sorry Blocked By Admin"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/acme"
+                    android:text="You Are block by Admin please contact to your Admin"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/block_ok"
+                    android:layout_width="300dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="30dp"
+                    android:backgroundTint="#19DA20"
+                    android:text="ok"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <Button
-                android:id="@+id/block_ok"
-                android:layout_width="300dp"
-                android:layout_height="60dp"
-                android:layout_marginTop="30dp"
-                android:backgroundTint="#19DA20"
-                android:text="ok"
-                android:textStyle="bold" />
+                android:id="@+id/call_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_round"
+                android:backgroundTint="#8BC34A"
+                android:drawableLeft="@drawable/ic_baseline_call_24"
+                android:padding="10dp"
+                android:text="Call" />
+
         </LinearLayout>
     </ScrollView>
 

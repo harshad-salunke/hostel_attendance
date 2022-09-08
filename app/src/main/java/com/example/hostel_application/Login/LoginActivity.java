@@ -1,5 +1,6 @@
 package com.example.hostel_application.Login;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -55,15 +56,15 @@ public class LoginActivity extends AppCompatActivity {
     Student student;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    ProgressDialog dialog;
+    String User_Uid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        try {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        catch (Exception e){
 
-        }
+        dialog = ProgressDialog.show(LoginActivity.this, "",
+                "Verifying. Please wait...", true);
+
         sharedPreferences=getSharedPreferences("user_info",MODE_PRIVATE);
         editor=sharedPreferences.edit();
 
@@ -82,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
        mobile_text=findViewById(R.id.veri_mobile);
 
         firebaseDatabase=FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference().child("Students").child("All_student");
+        databaseReference=firebaseDatabase.getReference().child("Students");
 
         callbacks=new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             @Override
@@ -104,6 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "OTP send sucssesfuly", Toast.LENGTH_SHORT).show();
                 verify_btn.setEnabled(true);
                 veri_progressBar.setVisibility(View.GONE);
+                dialog.cancel();
                 otpresend.setEnabled(true);
 
             }
@@ -111,9 +113,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
-
-
         if(Mobile_No!=null){
+            User_Uid=Mobile_No;
             sendotp(Mobile_No);
             mobile_text.setText(Mobile_No);
             Toast.makeText(this, Mobile_No, Toast.LENGTH_SHORT).show();
@@ -125,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onOtpCompleted(String otp) {
                 enter_otp=true;
                 veri_progressBar.setVisibility(View.VISIBLE);
+                dialog.show();
                 verify_btn.setEnabled(false);
                 PhoneAuthCredential phoneAuthCredential=PhoneAuthProvider.getCredential(mverificationId,otp.trim());
                 singInWithAuth(phoneAuthCredential);
@@ -171,6 +173,7 @@ public class LoginActivity extends AppCompatActivity {
                             enter_otp=false;
                             verify_btn.setEnabled(false);
                             veri_progressBar.setVisibility(View.GONE);
+                            dialog.cancel();
                             Toast.makeText(LoginActivity.this, "Please Enter Valid Code", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -179,12 +182,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void SaveDataInDB(Student s) {
         FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
-        String user=firebaseAuth.getCurrentUser().getUid();
-        s.setUid(user);
+         User_Uid=firebaseAuth.getCurrentUser().getUid();
+        s.setUid(User_Uid);
+        Toast.makeText(this, ""+student.getUid(), Toast.LENGTH_SHORT).show();
         Gson gson=new Gson();
         editor.putString("user",gson.toJson(s));
         editor.commit();
-        databaseReference.child(user).setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
+        databaseReference.child("back_up").child(User_Uid).setValue(s);
+        databaseReference.child("All_student").child(User_Uid).setValue(s).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     Intent intent=new Intent(LoginActivity.this, MainActivity.class);
@@ -199,6 +204,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
 
+
     }
 
 
@@ -210,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
     public void sendotp(String PhoneNumber){
         verify_btn.setEnabled(false);
         veri_progressBar.setVisibility(View.VISIBLE);
+        dialog.show();
         PhoneAuthOptions phoneAuthOptions=PhoneAuthOptions.newBuilder(mfirebaseaut)
                 .setPhoneNumber(PhoneNumber)
                 .setTimeout(60L, TimeUnit.SECONDS)

@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.bumptech.glide.Glide;
 import com.example.hostel_application.Adapters.NoticeAdapter;
 import com.example.hostel_application.R;
 import com.example.hostel_application.models.Notice;
@@ -32,6 +35,8 @@ public class AnnouncementFragment extends Fragment {
     NoticeAdapter noticeAdapter;
     ArrayList<Notice> arrayList;
     ShimmerFrameLayout shimmerFrameLayout;
+    ImageView my_logo;
+    LinearLayout empty_notice;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +64,12 @@ public class AnnouncementFragment extends Fragment {
                 shimmerFrameLayout.stopShimmer();
                 shimmerFrameLayout.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+
+                if(arrayList.size()==0){
+                    empty_notice.setVisibility(View.VISIBLE);
+                }else{
+                    empty_notice.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -81,7 +92,10 @@ public class AnnouncementFragment extends Fragment {
         arrayList=new ArrayList<>();
         noticeAdapter=new NoticeAdapter(arrayList,getContext());
         recyclerView.setAdapter(noticeAdapter);
+        empty_notice=view.findViewById(R.id.empty_notice);
+        my_logo=view.findViewById(R.id.my_logo2);
 
+        Glide.with(this).load(R.drawable.my_logo).into(my_logo);
     }
 
 

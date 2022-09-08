@@ -16,6 +16,7 @@
         <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
 
         <!-- Customize your theme here. -->
+
     </style>
 
     <style name="Theme.Hostel_Application.NoActionBar">

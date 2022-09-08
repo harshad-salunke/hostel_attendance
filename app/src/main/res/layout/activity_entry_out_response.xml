@@ -10,7 +10,7 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#3c415e"
+        android:background="@drawable/success_bg"
         android:orientation="horizontal"
         android:paddingTop="10dp"
         android:paddingBottom="5dp"
@@ -18,20 +18,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <ImageView
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:paddingStart="5dp"
+            app:srcCompat="@drawable/ic_baseline_arrow_back_24" />
+
         <TextView
+            android:id="@+id/clg_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/aclonica"
             android:gravity="center"
-            android:text="Entry Out Form"
+            android:text="Outpass"
             android:textColor="#FFFEFE"
             android:textSize="24sp"
             android:textStyle="bold" />
+
+        <ImageButton
+            android:id="@+id/delete_pass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="3dp"
+            android:backgroundTint="#FA0404"
+            app:srcCompat="@drawable/ic_baseline_delete_sweep_24" />
     </LinearLayout>
 
     <ScrollView
+        android:id="@+id/scrollview"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@drawable/success_bg"
@@ -51,6 +68,12 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:orientation="vertical">
+
+                <View
+                    android:id="@+id/view3"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#100E0E" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -88,7 +111,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/profile_name"
+                            android:id="@+id/name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -117,12 +140,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/acme"
-                                android:text="From - :     "
+                                android:text="From - :"
                                 android:textColor="#201F1F"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/from_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -142,12 +166,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/acme"
-                                android:text="To - :       "
+                                android:text="To - : "
                                 android:textColor="#201F1F"
                                 android:textSize="20sp"
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/to_date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -182,7 +207,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/profile_room"
+                                android:id="@+id/room"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -213,7 +238,7 @@
                             android:orientation="vertical">
 
                             <TextView
-                                android:id="@+id/profile_year"
+                                android:id="@+id/year"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -243,6 +268,7 @@
                             android:orientation="vertical">
 
                             <TextView
+                                android:id="@+id/branch"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -277,13 +303,25 @@
                         app:srcCompat="@drawable/pending" />
 
                     <TextView
+                        android:id="@+id/accepted"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:fontFamily="@font/aclonica"
                         android:gravity="center"
                         android:text="Under Review"
                         android:textColor="#3F51B5"
                         android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/valid_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        android:textColor="#F47303"
+                        android:textSize="16sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 

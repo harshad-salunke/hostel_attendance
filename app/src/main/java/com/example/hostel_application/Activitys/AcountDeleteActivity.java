@@ -109,7 +109,6 @@ SharedPreferences.Editor editor;
                             public void onClick(DialogInterface dialog, int which) {
                                 Intent intent=new Intent(AcountDeleteActivity.this,DeletedActivity.class);
                                 startActivity(intent);
-                                finishAffinity();
                             }
                         }).show();
 

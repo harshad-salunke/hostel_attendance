@@ -1,9 +1,11 @@
 package com.example.hostel_application;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,6 +40,24 @@ public class NoticeBoardActivity extends AppCompatActivity {
                 finish();
             }
         });
+        
+        findViewById(R.id.hostel_call).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:8788168008"));
+                startActivity(intent);
+            }
+        });
 
+        findViewById(R.id.hostel_chat).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uri = Uri.parse("smsto:9123445574");
+                Intent i = new Intent(Intent.ACTION_SENDTO, uri);
+                i.setPackage("com.whatsapp");
+                startActivity(i);
+            }
+        });
     }
 }

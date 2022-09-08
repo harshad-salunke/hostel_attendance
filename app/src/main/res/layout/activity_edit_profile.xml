@@ -135,7 +135,7 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/last_namelayout"
+                        android:id="@+id/room_no_layout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -150,7 +150,7 @@
                         app:helperTextEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/ipro_adharno"
+                            android:id="@+id/room_no"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"

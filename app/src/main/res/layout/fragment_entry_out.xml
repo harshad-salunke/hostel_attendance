@@ -42,59 +42,81 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <include
-                layout="@layout/announ_demo"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <include
-                layout="@layout/announ_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/announ_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/announ_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/announ_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/announ_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <include
-                layout="@layout/announ_demo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-        </LinearLayout>
+                <include
+                    layout="@layout/announ_demo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/my_logo2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginBottom="4dp"
+                android:src="@drawable/my_logo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.534"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </com.facebook.shimmer.ShimmerFrameLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatin_entryout_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_entry_out"
+        android:src="@drawable/ic_baseline_message_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.853"
+        app:layout_constraintHorizontal_bias="0.901"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -106,4 +128,33 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+
+    <LinearLayout
+        android:id="@+id/empty_notice"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+
+        <ImageView
+            android:id="@+id/imageView8"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:src="@drawable/ic_baseline_work_off_24" />
+
+        <TextView
+            android:id="@+id/textView36"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:fontFamily="@font/aclonica"
+            android:gravity="center"
+            android:text="Entry Out Form Empty Right Now !"
+            android:textSize="24sp" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

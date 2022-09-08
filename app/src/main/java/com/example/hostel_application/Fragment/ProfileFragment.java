@@ -19,7 +19,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.hostel_application.Activitys.AcountDeleteActivity;
 import com.example.hostel_application.Activitys.BlockActivity;
+import com.example.hostel_application.Activitys.ComplaintActivity;
+import com.example.hostel_application.Activitys.ContactHomeActivity;
 import com.example.hostel_application.Activitys.EditProfileActivity;
+import com.example.hostel_application.Activitys.PrivacyPolicyActivity;
 import com.example.hostel_application.Login.LoginActivity;
 import com.example.hostel_application.Login.Login_info;
 import com.example.hostel_application.R;
@@ -40,7 +43,7 @@ import java.util.Objects;
 public class ProfileFragment extends Fragment {
 
 ImageView profile_img;
-CardView payment_card,exit_card,delete_card,contact_card,edit_card;
+CardView payment_card,exit_card,delete_card,contact_card,edit_card,complaint_card,privacy_card;
 TextView name,clg,branch,year,room;
 FirebaseAuth firebaseAuth;
 ScrollView scrollView;
@@ -48,6 +51,7 @@ ShimmerFrameLayout shimmerFrameLayout;
 DatabaseReference databaseReference;
 FirebaseDatabase firebaseDatabase;
 FirebaseUser firebaseUser;
+ImageView myLogo,myLogo2;
 Student student;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +65,8 @@ Student student;
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_profile, container, false);
         initView(view);
-
+        Glide.with(getContext()).load(R.drawable.my_logo).into(myLogo);
+        Glide.with(getContext()).load(R.drawable.my_logo).into(myLogo2);
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference().child("Students");
         firebaseAuth=FirebaseAuth.getInstance();
@@ -121,14 +126,37 @@ Student student;
             }
         });
 
-        contact_card.setOnClickListener(new View.OnClickListener() {
+        complaint_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:9359978498"));
+                Gson gson=new Gson();
+                String json=gson.toJson(student);
+                Intent intent=new Intent(getActivity(), ComplaintActivity.class);
+                intent.putExtra("myJson",json);
                 startActivity(intent);
             }
         });
+
+        privacy_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getActivity(), PrivacyPolicyActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        contact_card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent intent=new Intent(getActivity(), ContactHomeActivity
+                        .class);
+                startActivity(intent);
+            }
+        });
+
+
+
         edit_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -175,5 +203,11 @@ edit_card=view.findViewById(R.id.edit_card);
         branch=view.findViewById(R.id.profile_branch);
         clg=view.findViewById(R.id.profile_clg);
         room=view.findViewById(R.id.profile_room);
+        myLogo=view.findViewById(R.id.my_logo);
+        myLogo2=view.findViewById(R.id.my_logo2);
+
+        complaint_card=view.findViewById(R.id.complaint_card);
+        privacy_card=view.findViewById(R.id.privacy_policy);
+
     }
 }

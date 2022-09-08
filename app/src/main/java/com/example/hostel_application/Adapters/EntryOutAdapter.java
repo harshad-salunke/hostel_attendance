@@ -50,13 +50,18 @@ public class EntryOutAdapter extends RecyclerView.Adapter<EntryOutAdapter.ViewHo
         if(entryOutModel.getAccepted().equals("t")){
             Glide.with(context).load(R.drawable.successfuly).into(holder.imageView);
             holder.layout.setBackgroundResource(R.drawable.success_bg);
+            holder.pending_text.setText("Accepted");
         }
        else if (entryOutModel.getAccepted().equals("f")){
             Glide.with(context).load(R.drawable.rejected).into(holder.imageView);
             holder.layout.setBackgroundResource(R.drawable.cancle_bg);
+            holder.pending_text.setText("Rejected");
+
         }else{
             Glide.with(context).load(R.drawable.pending).into(holder.imageView);
             holder.layout.setBackgroundResource(R.drawable.pending_bg);
+            holder.pending_text.setText("Under Review");
+
         }
 
         holder.from_date.setText(entryOutModel.getFrom_date());

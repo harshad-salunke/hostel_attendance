@@ -2,6 +2,7 @@ package com.example.hostel_application.Fragment;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -45,11 +46,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.hostel_application.Activitys.AcountDeleteActivity;
 import com.example.hostel_application.Activitys.BlockActivity;
+import com.example.hostel_application.Activitys.DeletedActivity;
 import com.example.hostel_application.Activitys.MyWerningActivity;
 import com.example.hostel_application.CalendarAdapter;
 import com.example.hostel_application.Login.Login_info;
 import com.example.hostel_application.R;
+import com.example.hostel_application.models.Additional_Class;
 import com.example.hostel_application.models.Attendance_data;
 import com.example.hostel_application.models.Student;
 import com.facebook.shimmer.ShimmerFrameLayout;
@@ -74,6 +78,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -83,6 +88,7 @@ import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -135,7 +141,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     ScrollView scrollView;
     ShimmerFrameLayout shimmerFrameLayout;
     TextView student_name, student_room, student_today_date;
-    ImageView profile_image;
+    ImageView profile_image,my_logo;
 
     LinearLayout progress_layout,location_layout;
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -202,6 +208,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     ShowNetWorkDilogBox();
                     return;
                 }
+                if(!isAddentanceTime()){
+                    return;
+                }
                 boolean check_autodate = true;
                 try {
                     check_autodate = check_autoDateTimeOnOf();
@@ -222,7 +231,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     return;
                 }
 
-
+                make_attendance_btn.setClickable(false);
                 String uid = firebaseUser.getUid();
                 String year_str = getCurrentYear().trim();
                 String month_str = getCurrentMonth().trim();
@@ -237,6 +246,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                         SharedPreferences.Editor myEdit = sharedPreferences.edit();
                         myEdit.putString("date", str);
                         myEdit.commit();
+
 
                         selectedDate = LocalDate.now();
                         year = getYear(selectedDate);
@@ -256,6 +266,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(getContext(), "" + e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        make_attendance_btn.setClickable(true);
+
                     }
                 });
 
@@ -321,6 +333,54 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
+    private boolean isAddentanceTime() {
+        SharedPreferences time_shareprefrence = this.getActivity().getSharedPreferences("attendance_time", Context.MODE_PRIVATE);
+        String time=time_shareprefrence.getString("time","");
+        Gson gson=new Gson();
+        if(time.equals("")){
+            return true;
+        }
+
+
+        Additional_Class additional_class=gson.fromJson(time,Additional_Class.class);
+        Date dt = new Date();
+        SimpleDateFormat dateFormat;
+        dateFormat = new SimpleDateFormat("kk:mm:ss");
+        System.out.println("Time in 24 hr format = "+dateFormat.format(dt));
+        String curTime_str=dateFormat.format(dt);
+
+        String timearr[]=additional_class.getAttendance_data().split("-");
+
+
+
+
+        int from_time=Integer.parseInt(timearr[0].substring(0,2));
+
+        int to_time=Integer.parseInt(timearr[1].substring(0,2));
+
+        int cur_time=Integer.parseInt(curTime_str.substring(0,2));
+
+        Log.d("harshad",""+from_time);
+        Log.d("harshad",""+to_time);
+        Log.d("harshad",""+cur_time);
+
+        //
+        if(cur_time>=from_time && cur_time<=to_time){
+            return  true;
+        }else {
+            AlertDialog.Builder alert_builder = new AlertDialog.Builder(getContext());
+            alert_builder.setTitle("Attendance Time")
+                    .setMessage("Attendance Will be Start \nFrom -: "+timearr[0]+"\nTo -:"+timearr[1])
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            return;
+                        }
+                    }).show();
+            return  false;
+        }
+    }
+
     private String getCurenntTime() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy hh.mm aa");
         String formattedDate = dateFormat.format(new Date()).toString();
@@ -366,6 +426,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         inside_outside_maptxt = view.findViewById(R.id.m_inside_out_text);
         make_attendance_btn = view.findViewById(R.id.make_attendance);
         location_alert = new AlertDialog.Builder(getContext());
+        my_logo=view.findViewById(R.id.my_logo);
+
+        Glide.with(this).load(R.drawable.my_logo).into(my_logo);
 
     }
 
@@ -712,10 +775,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             latitude.setText(""+location.getLongitude());
             progress_layout.setVisibility(View.GONE);
             location_layout.setVisibility(View.VISIBLE);
-            if (location_first){
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),location.getLongitude()),17));
-                location_first=false;
-            }
+
             if(circle!=null){
                 float[] distance = new float[2];
 

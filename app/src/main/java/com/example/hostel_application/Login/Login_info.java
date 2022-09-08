@@ -1,37 +1,53 @@
 package com.example.hostel_application.Login;
 
 import android.Manifest;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Geocoder;
-import android.media.audiofx.Equalizer;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.speech.tts.TextToSpeech;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 
+import com.bumptech.glide.Glide;
 import com.example.hostel_application.MainActivity;
 import com.example.hostel_application.R;
 import com.example.hostel_application.models.Student;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -47,50 +63,61 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 public class Login_info extends AppCompatActivity {
 
 
-    EditText mobile_number;
-    EditText name;
-    EditText room_no;
-    TextInputLayout first_name_layout;
-    TextInputLayout last_name_layout;
-    TextInputLayout floor_layout,clg_layout,gender_layout;
+
 
     CountryCodePicker countryCodePicker;
-    TextInputLayout mobile_textLayout;
     String selected_code="91";
+
+    //    personal details
+    TextInputLayout first_name_layout,mobile_textLayout;
+    TextInputLayout parent_mob_layout,parent_name_layout,address_layout,gfm_name_layout,gfm_mobile_layout;
+    EditText mobile_number,name,parent_mobile,parent_name,address,gfm_name,gfm_mobile;
+
+//    additional details
+    TextInputLayout floor_layout,clg_layout,gender_layout,clg_year_layout,clg_branch_layout,room_layout;
+    EditText room_no;
     Button continue_btn;
     AutoCompleteTextView collage_Name;
     AutoCompleteTextView gender;
     AutoCompleteTextView floorno;
     AutoCompleteTextView college_year,college_branch;
-    TextInputLayout clg_year_layout,clg_branch_layout;
-FirebaseDatabase firebaseDatabase;
-DatabaseReference databaseReference;
+
+    ImageView mylogo;
+    Dialog netConectivityDialog;
+
+    String User_msg_token;
+ScrollView scrollView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_info);
-        try {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        catch (Exception e){
 
+        if(!CheckInternetConnectiity()){
+            ShowNetWorkDilogBox();
         }
+scrollView=findViewById(R.id.scrollView);
+        mylogo=findViewById(R.id.imageView5);
+        Glide.with(this).load(R.drawable.my_logo).into(mylogo);
+
         getLocationPermission();
-        firebaseDatabase= FirebaseDatabase.getInstance();
-        databaseReference=firebaseDatabase.getReference().child("Students").child("All_student");
-        countryCodePicker=findViewById(R.id.county_code_picker);
-        mobile_textLayout=findViewById(R.id.mobileText_layout);
+        getDiviceToken();
+        initView();
+
+
+
 
         mobile_textLayout.setPrefixText("+"+selected_code);
         first_name_layout=findViewById(R.id.first_namelayout);
-        last_name_layout=findViewById(R.id.last_namelayout);
+        room_layout=findViewById(R.id.room_no_layout);
         name=first_name_layout.getEditText();
-        room_no=last_name_layout.getEditText();
+        room_no=room_layout.getEditText();
         mobile_number=mobile_textLayout.getEditText();
         continue_btn=findViewById(R.id.get_otp);
 
@@ -140,6 +167,24 @@ DatabaseReference databaseReference;
         college_branch.setAdapter(arrayAdapter5);
 
 
+mobile_number.addTextChangedListener(new TextWatcher() {
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        parent_mobile.setText("");
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        parent_mobile.setText("");
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        parent_mobile.setText("");
+
+    }
+});
 
         countryCodePicker.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
             @Override
@@ -160,6 +205,14 @@ DatabaseReference databaseReference;
                 String floor_str=floorno.getText().toString();
                 String year_str=college_year.getText().toString();
                 String branch_str_=college_branch.getText().toString();
+
+                String parent_n_str=parent_name.getText().toString();
+                String parent_m_str=parent_mobile.getText().toString();
+                String address_str=address.getText().toString();
+
+                String gfm_name_str=gfm_name.getText().toString();
+                String gfm_mobile_str=gfm_mobile.getText().toString();
+
                if(mobile_no.length()<10){
                    mobile_textLayout.setError("Enter 10 Digit No");
                    return;
@@ -172,10 +225,44 @@ DatabaseReference databaseReference;
                    first_name_layout.setError("Enter full Name");
                    return;
                }
-                if (room.equals("") || room.length()<3){
-                    last_name_layout.setError("Enter Valid Room No");
+
+                if(parent_n_str.equals("")){
+                    parent_name_layout.setError("It's Required !!");
                     return;
                 }
+
+               if(parent_m_str.length()<10){
+                   parent_mob_layout.setError("Ender 10 Digit No ");
+                   return;
+               }
+
+               if(mobile_no.equals(parent_m_str)){
+                   parent_mob_layout.setError("It's Not Your Parent No !!!");
+                   parent_mobile.setText("");
+                   scrollView.setFocusableInTouchMode(true);
+                   scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);                   return;
+               }
+
+               if(address_str.equals("")){
+                   address_layout.setError("It is Required !!!");
+                   return;
+               }
+
+                if(gfm_name_str.equals("")){
+                    gfm_name_layout.setError("It's Required !!");
+                    return;
+                }
+
+                if(gfm_mobile_str.length()<10){
+                    gfm_mobile_layout.setError("Ender 10 Digit No ");
+                    return;
+                }
+
+                if (room.equals("") || room.length()<3){
+                    room_layout.setError("Enter Valid Room No");
+                    return;
+                }
+
                 if(floor_str.equals("")){
                     floor_layout.setError("Required");
                     return;
@@ -198,17 +285,37 @@ DatabaseReference databaseReference;
                     clg_branch_layout.setError("Required");
                     return;
                 }
-                Toast.makeText(Login_info.this, "done", Toast.LENGTH_SHORT).show();
+                Log.d("harshad",parent_m_str);
+                Log.d("harshad",parent_n_str);
+                Log.d("harshad",address_str);
+                Log.d("harshad",User_msg_token);
                 mobile_no="+"+selected_code+mobile_no;
                 String date = getCurrentDate() + " " + getCurrentMonth();
 
-                Student student=new Student(mobile_no,mname,floor_str,room,gender_str,"",clg_str,false,year_str,branch_str_,date);
+                Student student=new Student(mobile_no,mname,floor_str,room,gender_str,"",clg_str,false,year_str,branch_str_,date,parent_n_str,parent_m_str,address_str,User_msg_token,gfm_name_str,gfm_mobile_str);
                 Gson gson=new Gson();
 
-                String json=gson.toJson(student);
-                Intent intent=new Intent(Login_info.this, LoginActivity.class);
-                intent.putExtra("myJson",json);
-                startActivity(intent);
+                String filter_number=mobile_no.substring(0,3)+" "+mobile_no.substring(3);
+                AlertDialog.Builder alert_builder = new AlertDialog.Builder(Login_info.this);
+                alert_builder.setTitle(filter_number)
+                        .setMessage(" Is this the Correct Number ?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String json=gson.toJson(student);
+                                Intent intent=new Intent(Login_info.this, LoginActivity.class);
+                                intent.putExtra("myJson",json);
+                                startActivity(intent);
+                            }
+                        }).setNegativeButton("Edit", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                scrollView.setFocusableInTouchMode(true);
+                                scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+                            }
+                        }).show();
+
+
 //                String key=databaseReference.push().getKey();
 //                student.setUid(key);
 //                databaseReference.child(key).setValue(student).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -223,6 +330,29 @@ DatabaseReference databaseReference;
 
             }
         });
+
+    }
+
+    private void initView() {
+
+        countryCodePicker=findViewById(R.id.county_code_picker);
+        mobile_textLayout=findViewById(R.id.mobileText_layout);
+
+        parent_name_layout=findViewById(R.id.parent_namelayout);
+        parent_name=findViewById(R.id.parent_name);
+
+        parent_mob_layout=findViewById(R.id.mobile_parent_layout);
+        parent_mobile=findViewById(R.id.parent_mobile);
+
+        address_layout=findViewById(R.id.address_namelayout);
+        address=findViewById(R.id.address);
+
+        gfm_mobile_layout=findViewById(R.id.gfm_mobile_layout);
+        gfm_name_layout=findViewById(R.id.gfm_namelayout);
+
+        gfm_name=findViewById(R.id.gfm_name);
+        gfm_mobile=findViewById(R.id.gfm_mobile);
+
 
     }
 
@@ -301,4 +431,78 @@ DatabaseReference databaseReference;
         }
         super.onStart();
     }
+
+    public void ShowNetWorkDilogBox() {
+        if (netConectivityDialog == null) {
+            netConectivityDialog = new Dialog(this);
+            netConectivityDialog.setContentView(R.layout.internet_alert_dailog);
+            netConectivityDialog.setCanceledOnTouchOutside(false);
+            netConectivityDialog.getWindow().setLayout(WindowManager.LayoutParams.WRAP_CONTENT,
+                    WindowManager.LayoutParams.WRAP_CONTENT);
+
+            netConectivityDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            netConectivityDialog.getWindow().getAttributes().windowAnimations= android.R.style.Animation_Dialog;
+            Button tryAgain_btn = netConectivityDialog.findViewById(R.id.block_ok);
+            tryAgain_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!CheckInternetConnectiity()) {
+                        ShowNetWorkDilogBox();
+                        return;
+                    }else {
+                        netConectivityDialog.dismiss();
+
+                    }
+
+                }
+            });
+        }
+        if (!CheckInternetConnectiity()) {
+            netConectivityDialog.show();
+        } else {
+            netConectivityDialog.dismiss();
+        }
+
+    }
+
+    public Boolean CheckInternetConnectiity() {
+        Context context = this;
+        if (context != null) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            boolean isConnected = networkInfo != null &&
+                    networkInfo.isConnectedOrConnecting();
+            return isConnected;
+        }
+        return false;
+
+    }
+
+    private void getDiviceToken() {
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String s) {
+                FirebaseMessaging.getInstance().getToken()
+                        .addOnCompleteListener(new OnCompleteListener<String>() {
+                            @Override
+                            public void onComplete(@NonNull Task<String> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w("harshad", "Fetching FCM registration token failed", task.getException());
+                                    return;
+                                }
+
+                                // Get new FCM registration token
+                                User_msg_token = task.getResult();
+
+                                Log.d("harshad", "Fetching FCM registration token done "+User_msg_token);
+
+                                // Log and toast
+                            }
+                        });
+            }
+        });
+
+    }
+
+
 }

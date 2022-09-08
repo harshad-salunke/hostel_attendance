@@ -15,9 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.example.hostel_application.Login.LoginActivity;
-import com.example.hostel_application.Login.Login_info;
 import com.example.hostel_application.R;
 import com.example.hostel_application.models.Student;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +22,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
-import com.rilixtech.widget.countrycodepicker.CountryCodePicker;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -60,7 +56,6 @@ ImageView profile_img;
         Gson gson = new Gson();
         student = gson.fromJson(json_obj, Student.class);
 
-
         firebaseDatabase= FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference().child("Students").child("All_student");
 
@@ -71,7 +66,7 @@ ImageView profile_img;
 
 
         first_name_layout=findViewById(R.id.first_namelayout);
-        last_name_layout=findViewById(R.id.last_namelayout);
+        last_name_layout=findViewById(R.id.room_no_layout);
         name=first_name_layout.getEditText();
                 name.setText(student.getName());
         room_no=last_name_layout.getEditText();
@@ -183,17 +178,22 @@ ImageView profile_img;
 
                 Gson gson=new Gson();
                 String student_infp=   gson.toJson(student);
-                databaseReference.child(student.getUid()).setValue(student).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        editor.putString("user",student_infp);
-                        editor.commit();
-                        Toast.makeText(EditProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
-                        dialog.cancel();
+                if(student.getUid()!=null){
+                    databaseReference.child(student.getUid()).setValue(student).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            editor.putString("user",student_infp);
+                            editor.commit();
+                            Toast.makeText(EditProfileActivity.this, "Profile Updated", Toast.LENGTH_SHORT).show();
+                            dialog.cancel();
 
 //                        finish();
-                    }
-                });
+                        }
+                    });
+
+                }else{
+                    Toast.makeText(EditProfileActivity.this, "Some thing is wrong", Toast.LENGTH_SHORT).show();
+                }
 
 
             }

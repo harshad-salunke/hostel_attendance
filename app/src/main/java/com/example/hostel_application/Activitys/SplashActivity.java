@@ -30,6 +30,8 @@ ImageView imageView;
         videoView.setVideoURI(uri);
         videoView.start();
         imageView=findViewById(R.id.loading_image);
+
+
         Glide.with(this).load(R.drawable.loading_gear).into(imageView);
 
         new Handler().postDelayed(new Runnable() {

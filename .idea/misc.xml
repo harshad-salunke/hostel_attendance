@@ -84,30 +84,46 @@
         <entry key="..\:/Users/Admin/AndroidStudioProjects/harshad/Hostel_Application/app/src/main/res/layout/shimmer_demo.xml" value="0.25" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/harshad/Hostel_Application/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.121" />
         <entry key="..\:/Users/Admin/AndroidStudioProjects/harshad/Hostel_Application/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.121" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable-v24/ic_baseline_present.xml" value="0.2405" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/cancle_bg.xml" value="0.2535" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/compland_ic.xml" value="0.2405" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/ic_baseline_compare_arrows_24.xml" value="0.2555" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/ic_baseline_date_range_24.xml" value="0.2405" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/ic_baseline_delete_sweep_24.xml" value="0.2405" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.2535" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/ic_baseline_wifi_off_24.xml" value="0.2405" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/ic_entry_out.xml" value="0.2535" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/sample.xml" value="0.2535" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/drawable/success_bg.xml" value="0.2535" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_acount_delete.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_block.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_block.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_complaint.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_contact_home.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_deleted.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_edit_profile.xml" value="0.22826086956521738" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_entry_out_form.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_entry_out_response.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_login.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_login_info.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_entry_out_response.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_login_info.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_mywerning.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_notice_board.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_notice_board.xml" value="0.2" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_privacy_policy.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_restore.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/activity_splash.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/announ_demo.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/announ_item.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/cakebdar_box.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/dropdown_item.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/entryout_demo.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/entryout_item.xml" value="0.264" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_announcement.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_entry_out.xml" value="0.2" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_home.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_profile.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_complant.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_entry_out.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_home.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/internet_alert_dailog.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/shimmer_demo.xml" value="0.25" />
       </map>
     </option>
   </component>
