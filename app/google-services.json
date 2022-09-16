@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:474717893065:android:4cad679be6bca3f7eab818",
         "android_client_info": {
-          "package_name": "com.example.admin_application"
+          "package_name": "com.student.admin_application"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "474717893065-16gumjsf9ob6gfsghoaopogi6m5aa5df.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.admin_application",
+            "package_name": "com.student.admin_application",
             "certificate_hash": "c854ac0cf8271a0013a3b1a114c684bd78f1b094"
           }
         },
@@ -47,7 +47,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:474717893065:android:219740713c1c6ce2eab818",
         "android_client_info": {
-          "package_name": "com.example.hostel_application"
+          "package_name": "com.student.hostel_application"
         }
       },
       "oauth_client": [
@@ -55,7 +55,7 @@
           "client_id": "474717893065-rv0o7v55sovhlrb53o9akkr6n5e5vbi8.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.hostel_application",
+            "package_name": "com.student.hostel_application",
             "certificate_hash": "c854ac0cf8271a0013a3b1a114c684bd78f1b094"
           }
         },

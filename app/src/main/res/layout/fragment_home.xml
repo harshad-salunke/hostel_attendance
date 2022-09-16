@@ -206,7 +206,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/acme"
-                            android:text="harshad salunke"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -230,7 +229,6 @@
                             android:id="@+id/floor"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:text="KJCOMER"
                             android:textColor="@color/black"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -254,7 +252,6 @@
                             android:id="@+id/student_room"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="316"
                             android:textColor="@color/black"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -279,7 +276,6 @@
                             android:id="@+id/today_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="21 august 2022"
                             android:textColor="@color/black"
                             android:textSize="14sp"
                             android:textStyle="bold" />

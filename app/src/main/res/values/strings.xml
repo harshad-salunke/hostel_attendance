@@ -8,10 +8,14 @@
     <style name="delete">Account Deletion</style>
 
     <string-array name="clgname" id="harshad">
-        <item>KJCOEMR</item>
-        <item>IIT</item>
-        <item>TAE</item>
-        <item>TCOP</item>
+        <item>KJCOEMR.(K J COLLEGE OF ENGINEERING AND MANAGEMENT RESEARCH)</item>
+        <item>TCOER.(Trinity College of Engineering and Research)</item>
+        <item>TAE.(Trinity Academy Of Engineering)</item>
+        <item>TIMR.(Trinity Institute Of Management And Research)</item>
+        <item>TCOP.(Trinity College Of Pharmacy)</item>
+        <item>TCOA.(Trinity College of Architecture)</item>
+        <item>TPP.(Trinity   Polytechnic, Pune)</item>
+        <item>TIS.(Trinity International School)</item>
     </string-array>
 
     <string-array name="floorno" id="harshad">
@@ -22,6 +26,10 @@
         <item>4</item>
         <item>5</item>
         <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
     </string-array>
 
     <string-array name="gender" id="harshad">
@@ -30,12 +38,6 @@
     </string-array>
 
     <string-array name="clg_year" id="harshad">
-
-        <!--        <item> 1st Year</item>-->
-        <!--        <item>2nd Year</item>-->
-        <!--        <item>3rd Year</item>-->
-        <!--        <item>4th Year</item>-->
-
         <item>FE</item>
         <item>SE</item>
         <item>TE</item>
@@ -43,12 +45,25 @@
     </string-array>
 
     <string-array name="clg_blanch" id="harshad">
-
         <item>Computer</item>
         <item>IT</item>
         <item>Mechanical</item>
         <item>Civil</item>
         <item>ENTC</item>
+        <item>Electical</item>
+        <item>MBA</item>
+        <item>B.Pharma</item>
+        <item>D.Pharma</item>
+        <item>B.Pharma(Lateral)</item>
+        <item>Pharmacy</item>
+        <item>Pharmaceutics</item>
+        <item>B.Arch(Architecture)</item>
+        <item>Engineering Science</item>
+        <item>Construction Technology</item>
+        <item>Design Engineering</item>
+        <item>Primary</item>
+        <item>Seconday</item>
+        <item>Senior Secondary</item>
     </string-array>
 
     <string name="title_activity_blocked">BlockedActivity</string>

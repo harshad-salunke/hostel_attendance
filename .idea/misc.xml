@@ -114,7 +114,7 @@
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/announ_demo.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/announ_item.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/cakebdar_box.xml" value="0.25" />
-        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/dropdown_item.xml" value="0.25" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/dropdown_item.xml" value="0.264" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/entryout_demo.xml" value="0.25" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/entryout_item.xml" value="0.264" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_announcement.xml" value="0.25" />
@@ -123,6 +123,8 @@
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/fragment_profile.xml" value="0.264" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/internet_alert_dailog.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/login_info.xml" value="0.264" />
+        <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/sample.xml" value="0.24895833333333334" />
         <entry key="..\:/Users/Harshad Salunke/AndroidStudioProjects/Hostel_Application/app/src/main/res/layout/shimmer_demo.xml" value="0.25" />
       </map>
     </option>
