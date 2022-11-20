@@ -16,7 +16,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.student.hostel_application.Notification.FcmNotificationsSender;
 import com.student.hostel_application.R;
 import com.student.hostel_application.models.EntryOutModel;
 import com.student.hostel_application.models.Student;
@@ -209,8 +208,8 @@ DatabaseReference databaseReference;
         databaseReference.child("entryout").child(key).setValue(entryOutModel).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                FcmNotificationsSender notificationsSender=new FcmNotificationsSender("/topics/admin","Entry Out Request",entryOutModel.getName(),getApplicationContext(),EntryOutFormActivity.this);
-                notificationsSender.SendNotifications();
+//                FcmNotificationsSender notificationsSender=new FcmNotificationsSender("/topics/admin","Entry Out Request",entryOutModel.getName(),getApplicationContext(),EntryOutFormActivity.this);
+//                notificationsSender.SendNotifications();
                 Toast.makeText(EntryOutFormActivity.this, "Succesfully Sended", Toast.LENGTH_SHORT).show();
                 dialog.cancel();
                 finish();

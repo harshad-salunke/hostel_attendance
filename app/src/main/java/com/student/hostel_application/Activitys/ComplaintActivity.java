@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.student.hostel_application.Notification.FcmNotificationsSender;
 import com.student.hostel_application.R;
 import com.student.hostel_application.models.Complaints;
 import com.student.hostel_application.models.DeleteAcount;
@@ -90,8 +89,8 @@ String UserUid;
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                complaint_text.setText("");
-                                FcmNotificationsSender notificationsSender=new FcmNotificationsSender("/topics/admin","⚠️ Complain Alert   ️⚠️"," Complaint Received",getApplicationContext(),ComplaintActivity.this);
-                                notificationsSender.SendNotifications();
+//                                FcmNotificationsSender notificationsSender=new FcmNotificationsSender("/topics/admin","⚠️ Complain Alert   ️⚠️"," Complaint Received",getApplicationContext(),ComplaintActivity.this);
+//                                notificationsSender.SendNotifications();
                                 finish();
                             }
                         }).show();

@@ -26,6 +26,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -83,20 +84,21 @@ public class Login_info extends AppCompatActivity {
 //    additional details
     TextInputLayout floor_layout,clg_layout,gender_layout,clg_year_layout,clg_branch_layout,room_layout;
     EditText room_no;
-    Button continue_btn;
+    Button continue_btn,back_button;
     AutoCompleteTextView collage_Name;
     AutoCompleteTextView gender;
     AutoCompleteTextView floorno;
     AutoCompleteTextView college_year,college_branch;
-
+    int page_number=0;
+    boolean check=false;
     ImageView mylogo;
     Dialog netConectivityDialog;
-
+TextView page_id;
     String User_msg_token;
 ScrollView scrollView;
 FirebaseDatabase firebaseDatabase;
 DatabaseReference databaseReference;
-
+TextView personal_d,addition_d;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,18 +127,19 @@ scrollView=findViewById(R.id.scrollView);
         room_no=room_layout.getEditText();
         mobile_number=mobile_textLayout.getEditText();
         continue_btn=findViewById(R.id.get_otp);
-
+        back_button=findViewById(R.id.back_info_btn);
         floor_layout=findViewById(R.id.floor_layout);
         gender_layout=findViewById(R.id.gender_layout);
         clg_layout=findViewById(R.id.clg_layout);
-
+        personal_d=findViewById(R.id.personal_details);
+        addition_d=findViewById(R.id.additaion_details);
         collage_Name=findViewById(R.id.collage_name);
         String arr[]= getResources().getStringArray(R.array.clgname);
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,
                 R.layout.dropdown_item, arr);
         collage_Name.setThreshold(9);
         collage_Name.setAdapter(arrayAdapter);
-
+        page_id=findViewById(R.id.page_id);
         floorno=findViewById(R.id.floor_no);
         String arr2[]= getResources().getStringArray(R.array.floorno);
         ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this,
@@ -203,158 +206,400 @@ mobile_number.addTextChangedListener(new TextWatcher() {
         continue_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               String mobile_no=mobile_number.getText().toString();
-               String mname=name.getText().toString();
-               String room=room_no.getText().toString();
-                String gender_str=gender.getText().toString();
-                String clg_str=collage_Name.getText().toString();
-                String floor_str=floorno.getText().toString();
-                String year_str=college_year.getText().toString();
-                String branch_str_=college_branch.getText().toString();
+                page_number=page_number+1;
 
-                String parent_n_str=parent_name.getText().toString();
-                String parent_m_str=parent_mobile.getText().toString();
-                String address_str=address.getText().toString();
-
-                String gfm_name_str=gfm_name.getText().toString();
-                String gfm_mobile_str=gfm_mobile.getText().toString();
-
-               if(mobile_no.length()<10){
-                   mobile_textLayout.setError("Enter 10 Digit No");
-                   Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
-                   return;
-               }
-               if(mobile_no.contains("+")){
-                   mobile_textLayout.setError("Enter Valid No");
-                   Toast.makeText(Login_info.this, "Envalid Mobile No", Toast.LENGTH_SHORT).show();
-
-                   return;
-               }
-               if (mname.equals("") || !mname.contains(" ")){
-                   first_name_layout.setError("Enter full Name");
-                   Toast.makeText(Login_info.this, "Enter Full Name", Toast.LENGTH_SHORT).show();
-
-                   return;
-               }
-
-                if(parent_n_str.equals("")){
-                    parent_name_layout.setError("It's Required !!");
-                    Toast.makeText(Login_info.this, "Parent name is Required", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-               if(parent_m_str.length()<10){
-                   parent_mob_layout.setError("Ender 10 Digit No ");
-                   Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
-                   return;
-               }
-
-               if(mobile_no.equals(parent_m_str)){
-                   parent_mob_layout.setError("It's Not Your Parent No !!!");
-                   parent_mobile.setText("");
-                   scrollView.setFocusableInTouchMode(true);
-                   scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
-                   Toast.makeText(Login_info.this, "Invalid Parent number", Toast.LENGTH_SHORT).show();
-
-                   return;
-               }
-
-               if(address_str.equals("")){
-                   address_layout.setError("It is Required !!!");
-                   Toast.makeText(Login_info.this, "Enter Address", Toast.LENGTH_SHORT).show();
-
-                   return;
-               }
-
-                if(gfm_name_str.equals("")){
-                    gfm_name_layout.setError("It's Required !!");
-                    Toast.makeText(Login_info.this, "Enter GFM Name", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-                if(gfm_mobile_str.length()<10){
-                    gfm_mobile_layout.setError("Ender 10 Digit No ");
-                    Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-                if (room.equals("") || room.length()<3){
-                    room_layout.setError("Enter Valid Room No");
-                    Toast.makeText(Login_info.this, "Enter room no", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-                if(floor_str.equals("")){
-                    floor_layout.setError("Required");
-                    Toast.makeText(Login_info.this, "Enter floor no", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-                if(clg_str.equals("")){
-                    clg_layout.setError("Required");
-                    Toast.makeText(Login_info.this, "Enter clg name", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-                if(gender_str.equals("")){
-                    gender_layout.setError("Required");
-                    Toast.makeText(Login_info.this, "Enter gender", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-
-                if(year_str.equals("")){
-                    clg_year_layout.setError("Required");
-                    Toast.makeText(Login_info.this, "Enter year", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-                if(branch_str_.equals("")){
-                    clg_branch_layout.setError("Required");
-                    Toast.makeText(Login_info.this, "Enter branch name", Toast.LENGTH_SHORT).show();
-
-                    return;
-                }
-                Log.d("harshad",parent_m_str);
-                Log.d("harshad",parent_n_str);
-                Log.d("harshad",address_str);
-                Log.d("harshad",User_msg_token);
-                mobile_no="+"+selected_code+mobile_no;
-                String date = getCurrentDate() + " " + getCurrentMonth();
-                String clg_name_arr[]=clg_str.split("\\.");
-                if (clg_name_arr[0]!=null){
-                    clg_str=clg_name_arr[0];
-                }
-                Log.d("harshad", clg_str);
-                Student student=new Student(mobile_no,mname,floor_str,room,gender_str,"",clg_str,false,year_str,branch_str_,date,parent_n_str,parent_m_str,address_str,User_msg_token,gfm_name_str,gfm_mobile_str);
-                Gson gson=new Gson();
-                String filter_number=mobile_no.substring(0,3)+" "+mobile_no.substring(3);
-                AlertDialog.Builder alert_builder = new AlertDialog.Builder(Login_info.this);
-                alert_builder.setTitle(filter_number)
-                        .setMessage(" Is this the Correct Number ?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                String json=gson.toJson(student);
-                                Intent intent=new Intent(Login_info.this, LoginActivity.class);
-                                intent.putExtra("myJson",json);
-                                startActivity(intent);
+                    switch (page_number){
+                        case 1:
+                            hide_mobile();
+                            if(check){
+                                show_parent();
+                                back_button.setVisibility(View.VISIBLE);
+                            }else{
+                                page_number=page_number-1;
                             }
-                        }).setNegativeButton("Edit", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                scrollView.setFocusableInTouchMode(true);
-                                scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+                            break;
+                        case 2:
+                            hide_parent();
+                            if(check){
+                                show_addition();
+                            }else{
+                                page_number=page_number-1;
                             }
-                        }).show();
+                            break;
+                        case 3:
+                            additional_checkUp();
+                            if(check){
+                                page_number=page_number-1;
+                                sendDataToOTP();
+                            }else{
+                                page_number=page_number-1;
+                            }
+                    }
+
+                check=false;
+page_id.setText("Page "+(page_number+1));
+            }
+        });
+
+        back_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                page_number=page_number-1;
+                if(page_number<0){
+                    page_number=0;
+                }
 
 
-//                String key=databaseReference.push().getKey();
+                switch (page_number){
+                    case 0:
+                        show_mobile();
+                        personal_d.setVisibility(View.GONE);
+                        parent_mob_layout.setVisibility(View.GONE);
+                        parent_name_layout.setVisibility(View.GONE);
+                        address_layout.setVisibility(View.GONE);
+
+                        break;
+                    case 1:
+                        show_parent();
+                        hide_addition();
+                        break;
+                }
+                page_id.setText("Page "+(page_number+1));
+
+            }
+        });
+
+    }
+
+    public void hide_mobile(){
+
+        String mobile_no=mobile_number.getText().toString();
+        String mname=name.getText().toString();
+
+        if(mobile_no.length()<10){
+            mobile_textLayout.setError("Enter 10 Digit No");
+            Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(mobile_no.contains("+")){
+            mobile_textLayout.setError("Enter Valid No");
+            Toast.makeText(Login_info.this, "Envalid Mobile No", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (mname.equals("") || !mname.contains(" ")){
+            first_name_layout.setError("Enter full Name");
+            Toast.makeText(Login_info.this, "Enter Full Name", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+personal_d.setVisibility(View.GONE);
+mobile_textLayout.setVisibility(View.GONE);
+first_name_layout.setVisibility(View.GONE);
+countryCodePicker.setVisibility(View.GONE);
+check=true;
+    }
+    public  void show_mobile(){
+        personal_d.setVisibility(View.VISIBLE);
+        mobile_textLayout.setVisibility(View.VISIBLE);
+        first_name_layout.setVisibility(View.VISIBLE);
+        countryCodePicker.setVisibility(View.VISIBLE);
+
+    }
+
+    public  void hide_parent(){
+        String mobile_no=mobile_number.getText().toString();
+        String parent_n_str=parent_name.getText().toString();
+        String parent_m_str=parent_mobile.getText().toString();
+        String address_str=address.getText().toString();
+        if(parent_n_str.equals("")){
+            parent_name_layout.setError("It's Required !!");
+            Toast.makeText(Login_info.this, "Parent name is Required", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(parent_m_str.length()<10){
+            parent_mob_layout.setError("Ender 10 Digit No ");
+            Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(mobile_no.equals(parent_m_str)){
+            parent_mob_layout.setError("It's Not Your Parent No !!!");
+            parent_mobile.setText("");
+            scrollView.setFocusableInTouchMode(true);
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+            Toast.makeText(Login_info.this, "Invalid Parent number", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(address_str.equals("")){
+            address_layout.setError("It is Required !!!");
+            Toast.makeText(Login_info.this, "Enter Address", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        personal_d.setVisibility(View.GONE);
+        parent_mob_layout.setVisibility(View.GONE);
+parent_name_layout.setVisibility(View.GONE);
+address_layout.setVisibility(View.GONE);
+check=true;
+    }
+
+
+    public  void show_parent(){
+        personal_d.setVisibility(View.VISIBLE);
+        parent_mob_layout.setVisibility(View.VISIBLE);
+        parent_name_layout.setVisibility(View.VISIBLE);
+        address_layout.setVisibility(View.VISIBLE);
+    }
+
+
+    public void show_addition(){
+        addition_d.setVisibility(View.VISIBLE);
+        gfm_mobile_layout.setVisibility(View.VISIBLE);
+        gfm_name_layout.setVisibility(View.VISIBLE);
+        room_layout.setVisibility(View.VISIBLE);
+        floor_layout.setVisibility(View.VISIBLE);
+        clg_layout.setVisibility(View.VISIBLE);
+        clg_year_layout.setVisibility(View.VISIBLE);
+        clg_branch_layout.setVisibility(View.VISIBLE);
+        gender_layout.setVisibility(View.VISIBLE);
+    }
+    public void hide_addition(){
+        addition_d.setVisibility(View.GONE);
+        gfm_mobile_layout.setVisibility(View.GONE);
+        gfm_name_layout.setVisibility(View.GONE);
+        room_layout.setVisibility(View.GONE);
+        floor_layout.setVisibility(View.GONE);
+        clg_layout.setVisibility(View.GONE);
+        clg_year_layout.setVisibility(View.GONE);
+        clg_branch_layout.setVisibility(View.GONE);
+        gender_layout.setVisibility(View.GONE);
+    }
+    public  void additional_checkUp(){
+        String room=room_no.getText().toString();
+        String gender_str=gender.getText().toString();
+        String clg_str=collage_Name.getText().toString();
+        String floor_str=floorno.getText().toString();
+        String year_str=college_year.getText().toString();
+        String branch_str_=college_branch.getText().toString();
+//        String gfm_name_str=gfm_name.getText().toString();
+//        String gfm_mobile_str=gfm_mobile.getText().toString();
+
+
+
+//        if(gfm_name_str.equals("")){
+//            gfm_name_layout.setError("It's Required !!");
+//            Toast.makeText(Login_info.this, "Enter GFM Name", Toast.LENGTH_SHORT).show();
+//
+//            return;
+//        }
+//
+//        if(gfm_mobile_str.length()<10){
+//            gfm_mobile_layout.setError("Ender 10 Digit No ");
+//            Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
+//
+//            return;
+//        }
+
+        if (room.equals("") || room.length()<3){
+            room_layout.setError("Enter Valid Room No");
+            Toast.makeText(Login_info.this, "Enter room no", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(floor_str.equals("")){
+            floor_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter floor no", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(clg_str.equals("")){
+            clg_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter clg name", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        if(gender_str.equals("")){
+            gender_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter gender", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(year_str.equals("")){
+            clg_year_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter year", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        if(branch_str_.equals("")){
+            clg_branch_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter branch name", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        check=true;
+    }
+
+    private void sendDataToOTP() {
+        String mobile_no=mobile_number.getText().toString();
+        String mname=name.getText().toString();
+        String room=room_no.getText().toString();
+        String gender_str=gender.getText().toString();
+        String clg_str=collage_Name.getText().toString();
+        String floor_str=floorno.getText().toString();
+        String year_str=college_year.getText().toString();
+        String branch_str_=college_branch.getText().toString();
+
+        String parent_n_str=parent_name.getText().toString();
+        String parent_m_str=parent_mobile.getText().toString();
+        String address_str=address.getText().toString();
+
+        String gfm_name_str=gfm_name.getText().toString();
+        String gfm_mobile_str=gfm_mobile.getText().toString();
+
+        if(mobile_no.length()<10){
+            mobile_textLayout.setError("Enter 10 Digit No");
+            Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(mobile_no.contains("+")){
+            mobile_textLayout.setError("Enter Valid No");
+            Toast.makeText(Login_info.this, "Envalid Mobile No", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        if (mname.equals("") || !mname.contains(" ")){
+            first_name_layout.setError("Enter full Name");
+            Toast.makeText(Login_info.this, "Enter Full Name", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(parent_n_str.equals("")){
+            parent_name_layout.setError("It's Required !!");
+            Toast.makeText(Login_info.this, "Parent name is Required", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(parent_m_str.length()<10){
+            parent_mob_layout.setError("Ender 10 Digit No ");
+            Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if(mobile_no.equals(parent_m_str)){
+            parent_mob_layout.setError("It's Not Your Parent No !!!");
+            parent_mobile.setText("");
+            scrollView.setFocusableInTouchMode(true);
+            scrollView.setDescendantFocusability(ViewGroup.FOCUS_BEFORE_DESCENDANTS);
+            Toast.makeText(Login_info.this, "Invalid Parent number", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(address_str.equals("")){
+            address_layout.setError("It is Required !!!");
+            Toast.makeText(Login_info.this, "Enter Address", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+//        if(gfm_name_str.equals("")){
+//            gfm_name_layout.setError("It's Required !!");
+//            Toast.makeText(Login_info.this, "Enter GFM Name", Toast.LENGTH_SHORT).show();
+//
+//            return;
+//        }
+//
+//        if(gfm_mobile_str.length()<10){
+//            gfm_mobile_layout.setError("Ender 10 Digit No ");
+//            Toast.makeText(Login_info.this, "Enter 10 Digit No", Toast.LENGTH_SHORT).show();
+//
+//            return;
+//        }
+
+        if (room.equals("") || room.length()<3){
+            room_layout.setError("Enter Valid Room No");
+            Toast.makeText(Login_info.this, "Enter room no", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(floor_str.equals("")){
+            floor_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter floor no", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(clg_str.equals("")){
+            clg_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter clg name", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        if(gender_str.equals("")){
+            gender_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter gender", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+
+        if(year_str.equals("")){
+            clg_year_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter year", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        if(branch_str_.equals("")){
+            clg_branch_layout.setError("Required");
+            Toast.makeText(Login_info.this, "Enter branch name", Toast.LENGTH_SHORT).show();
+
+            return;
+        }
+        Log.d("harshad",parent_m_str);
+        Log.d("harshad",parent_n_str);
+        Log.d("harshad",address_str);
+        Log.d("harshad",User_msg_token);
+        mobile_no="+"+selected_code+mobile_no;
+        String date = getCurrentDate() + " " + getCurrentMonth();
+        String clg_name_arr[]=clg_str.split("\\.");
+        if (clg_name_arr[0]!=null){
+            clg_str=clg_name_arr[0];
+        }
+        Log.d("harshad", clg_str);
+        Student student=new Student(mobile_no,mname,floor_str,room,gender_str,"",clg_str,false,year_str,branch_str_,date,parent_n_str,parent_m_str,address_str,User_msg_token,gfm_name_str,gfm_mobile_str);
+        Gson gson=new Gson();
+        String filter_number=mobile_no.substring(0,3)+" "+mobile_no.substring(3);
+        AlertDialog.Builder alert_builder = new AlertDialog.Builder(Login_info.this);
+        alert_builder.setTitle(filter_number)
+                .setMessage(" Is this the Correct Number ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String json=gson.toJson(student);
+                        Intent intent=new Intent(Login_info.this, LoginActivity.class);
+                        intent.putExtra("myJson",json);
+                        startActivity(intent);
+                    }
+                }).setNegativeButton("Edit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        show_mobile();
+                        hide_addition();
+                        page_number=0;
+                    }
+                }).show();
+
+
+        //                String key=databaseReference.push().getKey();
 //                student.setUid(key);
 //                databaseReference.child(key).setValue(student).addOnSuccessListener(new OnSuccessListener<Void>() {
 //                    @Override
@@ -365,10 +610,6 @@ mobile_number.addTextChangedListener(new TextWatcher() {
 //                        Toast.makeText(Login_info.this, "done", Toast.LENGTH_SHORT).show();
 //                    }
 //                });
-
-
-            }
-        });
 
     }
 

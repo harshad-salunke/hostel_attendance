@@ -10,6 +10,7 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,14 +60,6 @@
                         android:textStyle="bold|italic"
                         android:visibility="visible" />
 
-                    <TextView
-                        android:id="@+id/textView33"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Note Please Turn Off Your Dark Mode"
-                        android:textColor="#F44336"
-                        android:visibility="gone" />
-
                     <View
                         android:id="@+id/view4"
                         android:layout_width="wrap_content"
@@ -74,6 +67,7 @@
                         android:background="@color/black" />
 
                     <TextView
+                        android:id="@+id/personal_details_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -81,7 +75,7 @@
                         android:textColor="#D50F01"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                     <com.rilixtech.widget.countrycodepicker.CountryCodePicker
                         android:id="@+id/county_code_picker"
@@ -148,6 +142,7 @@
                             android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
 
+
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/parent_namelayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -156,9 +151,10 @@
                         android:layout_margin="5dp"
                         android:background="@color/white"
                         android:hint="Parent Name"
+                        android:visibility="gone"
                         app:boxStrokeColor="@color/black"
-                        app:endIconMode="clear_text"
 
+                        app:endIconMode="clear_text"
                         app:hintTextColor="#00BCD4">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -167,7 +163,6 @@
                             android:layout_height="wrap_content"
                             android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
-
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/mobile_parent_layout"
@@ -178,6 +173,7 @@
                         android:background="@color/white"
                         android:hint="Parent Mobile No"
 
+                        android:visibility="gone"
                         app:boxStrokeColor="@color/black"
                         app:counterEnabled="true"
                         app:counterMaxLength="10"
@@ -210,6 +206,7 @@
                         android:layout_margin="5dp"
                         android:background="@color/white"
                         android:hint="Permanent Address"
+                        android:visibility="gone"
                         app:boxStrokeColor="@color/black"
                         app:hintTextColor="#00BCD4">
 
@@ -227,6 +224,7 @@
                         android:background="@color/black" />
 
                     <TextView
+                        android:id="@+id/additaion_details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -234,7 +232,8 @@
                         android:textColor="#D50F01"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
+
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/gfm_namelayout"
@@ -244,9 +243,10 @@
                         android:layout_margin="5dp"
                         android:background="@color/white"
                         android:hint="Clg GFM Name"
+                        android:visibility="gone"
                         app:boxStrokeColor="@color/black"
-                        app:endIconMode="clear_text"
 
+                        app:endIconMode="clear_text"
                         app:hintTextColor="#00BCD4">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -255,7 +255,6 @@
                             android:layout_height="wrap_content"
                             android:inputType="text" />
                     </com.google.android.material.textfield.TextInputLayout>
-
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/gfm_mobile_layout"
@@ -266,6 +265,7 @@
                         android:background="@color/white"
                         android:hint="GFM Mobile No"
 
+                        android:visibility="gone"
                         app:boxStrokeColor="@color/black"
                         app:counterEnabled="true"
                         app:counterMaxLength="10"
@@ -299,8 +299,9 @@
                         android:hint="Room No"
 
                         android:outlineSpotShadowColor="@color/red"
-                        app:boxStrokeColor="@color/black"
+                        android:visibility="gone"
 
+                        app:boxStrokeColor="@color/black"
                         app:endIconMode="clear_text"
                         app:helperTextEnabled="true">
 
@@ -322,6 +323,7 @@
                         android:layout_margin="5dp"
                         android:background="@color/white"
                         android:hint="Floor No"
+                        android:visibility="gone"
                         app:helperTextEnabled="true">
 
                         <AutoCompleteTextView
@@ -342,6 +344,7 @@
                         android:layout_margin="5dp"
                         android:background="@color/white"
                         android:hint="College Name"
+                        android:visibility="gone"
                         app:helperTextEnabled="true">
 
                         <AutoCompleteTextView
@@ -356,9 +359,11 @@
 
 
                     <LinearLayout
+                        android:id="@+id/clg_layout_year_bran"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:visibility="gone">
 
 
                         <com.google.android.material.textfield.TextInputLayout
@@ -416,6 +421,7 @@
                         android:layout_margin="5dp"
                         android:background="@color/white"
                         android:hint="Gender"
+                        android:visibility="gone"
                         app:helperTextEnabled="true">
 
                         <AutoCompleteTextView
@@ -429,17 +435,33 @@
                     </com.google.android.material.textfield.TextInputLayout>
 
 
-                    <Button
-                        android:id="@+id/get_otp"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="continue"
-                        android:textColor="@color/black"
-                        app:backgroundTint="#00BCD4"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
 
+                        <Button
+                            android:id="@+id/back_info_btn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableStart="@drawable/ic_baseline_arrow_back_24"
+                            android:text="Back" />
+
+                        <Button
+                            android:id="@+id/get_otp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableEnd="@drawable/arrow_right_24"
+                            android:text="next"
+                            android:textColor="@color/black"
+                            app:backgroundTint="#00BCD4"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/imageView5"
