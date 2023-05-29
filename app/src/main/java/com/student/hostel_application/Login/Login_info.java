@@ -109,7 +109,7 @@ TextView personal_d,addition_d;
         }
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference().child("Students").child("All_student");
-scrollView=findViewById(R.id.scrollView);
+        scrollView=findViewById(R.id.scrollView);
         mylogo=findViewById(R.id.imageView5);
         Glide.with(this).load(R.drawable.my_logo).into(mylogo);
 

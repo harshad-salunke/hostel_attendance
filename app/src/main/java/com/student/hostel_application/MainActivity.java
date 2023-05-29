@@ -1,16 +1,29 @@
 package com.student.hostel_application;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
 import com.student.hostel_application.Activitys.AcountDeleteActivity;
 import com.student.hostel_application.Activitys.DeletedActivity;
 import com.student.hostel_application.Fragment.AnnouncementFragment;
@@ -38,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences.Editor time_editor;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    public static int UPDATE_CODE=22;
+    AppUpdateManager appUpdateManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
 //        catch (Exception e){
 //
 //        }
+        inAppUpdate();
         firebaseDatabase=FirebaseDatabase.getInstance();
         databaseReference=firebaseDatabase.getReference().child("Students").child("addition_class").child("9359978498");
         sharedPreferences=getSharedPreferences("delete",MODE_PRIVATE);
@@ -104,6 +120,59 @@ public class MainActivity extends AppCompatActivity {
         });
         bottomNavigation.show(2,true);
 
+    }
+
+    private void inAppUpdate() {
+        appUpdateManager= AppUpdateManagerFactory.create(this);
+        Task<AppUpdateInfo> task=appUpdateManager.getAppUpdateInfo();
+        task.addOnSuccessListener(new com.google.android.play.core.tasks.OnSuccessListener<AppUpdateInfo>() {
+            @Override
+            public void onSuccess(AppUpdateInfo appUpdateInfo) {
+                if(appUpdateInfo.updateAvailability()== UpdateAvailability.UPDATE_AVAILABLE
+                        && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)){
+                    try {
+                        appUpdateManager.startUpdateFlowForResult(appUpdateInfo,AppUpdateType.IMMEDIATE,MainActivity.this,UPDATE_CODE);
+                    } catch (IntentSender.SendIntentException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        });
+        appUpdateManager.registerListener(listener);
+    }
+
+    InstallStateUpdatedListener listener=installState -> {
+        if(installState.installStatus()== InstallStatus.DOWNLOADED){
+            popUp();
+        }
+    };
+
+    private void popUp() {
+        Snackbar snackbar=Snackbar.make(
+                findViewById(android.R.id.content),
+                "App Update Almost Done",
+                Snackbar.LENGTH_INDEFINITE
+        );
+        snackbar.setAction("Reload", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                appUpdateManager.completeUpdate();
+
+            }
+        });
+        snackbar.setTextColor(Color.parseColor("#FF0000"));
+        snackbar.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==UPDATE_CODE){
+            if(resultCode!=RESULT_OK){
+
+            }
+        }
     }
 
     private void getAttendacne_time() {
